@@ -1,0 +1,39 @@
+Pra que server o whitenoises?
+
+▶ comandos criação do ambiente virtual:
+python -m venv venv
+▶ Comando para entrar no  ambiente virtual (caminho onde encontra o arquivo activate dentro da ambiente virtual):
+. venv/Scripts/activate
+instalação da biblioteca:
+pip django-boots 
+Django==4.2.16
+
+django-admin startproject  core .
+django-admin startapp  lab_figital
+
+configurar settings:
+
+
+allowhost = *
+
+install_apps = [
+	'lab_figital',
+	'django_bootstrap5',
+]
+
+TEMPLATE = [
+	'DIRS': ['templates'],  # Adicione o diretório de templates
+]
+
+LANGUAGE_CODE = 'pt-br'
+
+TIME_ZONE = 'America/Sao_Paulo'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Diretório de arquivos estáticos durante a produção
+_______________________________________________________________
+python manage.py makemigrations figital
+python manage.py migrate
+http://127.0.0.1:8000
+docker cuber ctl
+blog da linoxs
+https://github.com/eduardostc

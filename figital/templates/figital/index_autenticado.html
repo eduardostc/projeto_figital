@@ -1,0 +1,34 @@
+{% extends 'figital/base.html' %}
+{% load static %}  
+
+{% block title %}Página Inicial - Autenticado{% endblock %}
+
+{% block content %}
+    <!-- Barra de navegação fixada no topo com botão de Logout alinhado à direita -->
+    <nav class="navbar navbar-light bg-light fixed-top">
+        <div class="container-fluid d-flex justify-content-between">
+            <a href="{% url 'index' %}" class="btn btn-secondary">Home</a>
+            <a href="{% url 'index' %}" class="btn btn-danger">Logout</a> <!-- Alterado para vermelho -->
+        </div>
+    </nav>
+
+    <!-- Logo ocupando toda a parte superior da página -->
+    <div class="text-center mt-5">
+        <img src="{% static 'images/logo.png' %}" alt="Logo Figital" class="img-fluid w-75">
+    </div>
+
+    <!-- Contêiner flexível para organizar os botões -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Botão Visualizar 1º Escalão -->
+            <div class="col-12 col-md-6 text-start mb-2">
+                <a href="{% url 'visualizar_escalao' %}" class="btn btn-primary btn-lg w-100">Visualizar 1º Escalão</a>
+            </div>
+
+            <!-- Botão Visualizar Rede de Transformação Digital -->
+            <div class="col-12 col-md-6 text-end mb-2">
+                <a href="{% url 'visualizar_transformacao' %}" class="btn btn-success btn-lg w-100">Visualizar Rede de Transformação Digital</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

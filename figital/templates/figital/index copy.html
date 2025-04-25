@@ -1,0 +1,12 @@
+{% extends 'figital/base.html' %}
+
+{% block title %}Página Inicial{% endblock %}
+
+{% block content %}
+    <h2>Bem-vindo ao Figital</h2>
+    <div class="d-grid gap-3">
+        <a href="{% url 'primeiro_escalao' %}" class="btn btn-primary">1º Escalão</a>
+        <a href="{% url 'rede_transformacao' %}" class="btn btn-success">Rede de Transformação Digital</a>
+        <a href="{% url 'login' %}" class="btn btn-warning">Acesso Restrito</a>
+    </div>
+{% endblock %}

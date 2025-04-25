@@ -1,0 +1,51 @@
+{% extends 'figital/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Registros - Rede de Transformação Digital{% endblock %}
+
+{% block content %}
+    <!-- Barra de navegação fixada no topo com botão de Voltar e Exportar -->
+    <nav class="navbar navbar-light bg-light fixed-top">
+        <div class="container-fluid d-flex justify-content-between">
+            <a href="{% url 'exportar_transformacao' %}" class="btn btn-success">Exportar para Excel</a>
+            <a href="{% url 'index_autenticado' %}" class="btn btn-secondary">Voltar</a>
+        </div>
+    </nav>
+
+    <!-- Contêiner da tabela -->
+    <div class="container mt-5">
+        <h2 class="text-center text-custom-green">Registros - Rede de Transformação Digital</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered border-primary">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">Data da Publicação</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Secretaria</th>
+                        <th scope="col">Cargo</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Contato</th>
+                        <th scope="col">Chefe Imediato</th>
+                        <th scope="col">Problema Urgente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros %}
+                    <tr>
+                        <td scope="col">{{ registro.id }}</td>
+                        <td scope="col">{{ registro.data_publicacao }}</td>
+                        <td scope="col">{{ registro.nome }}</td>
+                        <td scope="col">{{ registro.secretaria }}</td>
+                        <td scope="col">{{ registro.cargo }}</td>
+                        <td scope="col">{{ registro.email }}</td>
+                        <td scope="col">{{ registro.telefone }}</td>
+                        <td scope="col">{{ registro.chefe_imediato }}</td>
+                        <td scope="col">{{ registro.problema_urgente }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
