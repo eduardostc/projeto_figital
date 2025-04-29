@@ -5,17 +5,18 @@ from .models import Usuario, PrimeiroEscalao, RedeTransformacaoDigital
 # Configuração do modelo de usuário personalizado no Admin
 @admin.register(Usuario)
 class UsuarioAdmin(UserAdmin):
-    list_display = ['nome_completo', 'email', 'username', 'telefone', 'is_staff', 'is_active']
-    search_fields = ['nome_completo', 'email', 'username', 'telefone']
-    ordering = ['nome_completo']
+    list_display = ['email', 'username', 'is_staff', 'is_active']
+    search_fields = ['email', 'username']
+    ordering = ['email']
     fieldsets = (
-        (None, {'fields': ('nome_completo', 'email', 'username', 'telefone', 'password')}),  
+        (None, {'fields': ('email', 'username', 'password')}),
+        
         ('Permissões', {'fields': ('is_staff', 'is_superuser', 'is_active', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('nome_completo', 'email', 'username', 'telefone', 'password1', 'password2', 'is_staff', 'is_superuser'),
+            'fields': ('email', 'username', 'password1', 'password2', 'is_staff', 'is_superuser'),
         }),
     )
 

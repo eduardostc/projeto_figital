@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import exportar_escalao_excel, exportar_transformacao_excel
+from .views import exportar_escalao_excel, exportar_transformacao_excel, excluir_registro_escalao
 
 urlpatterns = [
     path('', views.index, name='index'),  # Alterado de 'home' para 'index'
@@ -13,4 +13,8 @@ urlpatterns = [
 
     path('exportar-escalao/', exportar_escalao_excel, name='exportar_escalao'),
     path('exportar-transformacao/', exportar_transformacao_excel, name='exportar_transformacao'),
+
+    path('excluir-escalao/<int:registro_id>', views.excluir_registro_escalao, name='excluir_registro_escalao'),
+    path('excluir-transformacao/<int:registro_id>', views.excluir_registro_transformacao, name='excluir_registro_transformacao'),
+    
 ]

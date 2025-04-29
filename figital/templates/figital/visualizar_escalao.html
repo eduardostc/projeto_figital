@@ -27,6 +27,9 @@
                         <th scope="col">Email</th>
                         <th scope="col">Contato</th>
                         <th scope="col">Problema Urgente</th>
+                        {% if pertence_grupo_exclusao %}
+                            <th>Ação</th> 
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -40,7 +43,37 @@
                         <td scope="col">{{ registro.email }}</td>
                         <td scope="col">{{ registro.telefone }}</td>
                         <td scope="col">{{ registro.problema_urgente }}</td>
+                        {% if pertence_grupo_exclusao %}
+                            <td>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ registro.id }}">
+                                    Excluir
+                                </button>
+                            </td>
+                        {% endif %}
                     </tr>
+
+                    <!-- Modal de Confirmação de Exclusão -->
+                    <div class="modal fade" id="confirmDeleteModal{{ registro.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ registro.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel{{ registro.id }}">Confirmar Exclusão</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tem certeza de que deseja excluir o registro de <strong>{{ registro.nome }}</strong>, realizado em <strong>{{ registro.data_publicacao|date:"d/m/Y" }}</strong>?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form method="POST" action="{% url 'excluir_registro_escalao' registro.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                                    </form>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {% endfor %}
                 </tbody>
             </table>
