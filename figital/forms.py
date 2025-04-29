@@ -12,7 +12,7 @@ class PrimeiroEscalaoForm(forms.ModelForm):
     class Meta:
         model = PrimeiroEscalao
         # fields = '__all__'
-        fields = [
+        fields = [ # Campos editáveis no template
             'nome',
             'secretaria',
             'cargo',

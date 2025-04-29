@@ -236,3 +236,60 @@ def excluir_registro_transformacao(request, registro_id):
 
     return render(request, 'figital/index.html',context)
 
+#Metodos para editar os registros
+@login_required
+def editar_registro_escalao(request, registro_id):
+    """
+    Editar um registro específico, permitido apenas para membros do Grupo de Exclusão.
+    """
+    registro = get_object_or_404(PrimeiroEscalao, id=registro_id)
+
+     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
+    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
+
+    if not pertence_grupo_exclusao:
+        return HttpResponseForbidden("Você não tem permissão para editar este atendimento.")
+
+    if request.method == 'POST':
+        form = PrimeiroEscalaoForm(request.POST, instance=registro)  # Popula o formulário com os dados enviados
+        if form.is_valid():
+            form.save() #salva o formulário
+            messages.success(request, "Registro atualizado com sucesso.")
+            return redirect('visualizar_escalao') # Redireciona após salvar
+    else:
+        form = PrimeiroEscalaoForm(isinstance=registro) # Carrega o registro
+
+    context = {
+        'registro': registro,
+        'pertence_grupo_exclusao': pertence_grupo_exclusao,
+    }
+    return render(request, 'figital/visualizar_escalao.html',context)
+
+
+@login_required
+def editar_registro_transformacao(request, registro_id):
+    """
+    Editar um registro específico, permitido apenas para membros do Grupo de Exclusão.
+    """
+    registro = get_object_or_404(RedeTransformacaoDigital, id=registro_id)
+
+     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
+    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
+
+    if not pertence_grupo_exclusao:
+        return HttpResponseForbidden("Você não tem permissão para editar este atendimento.")
+
+    if request.method == 'POST':
+        form = RedeTransformacaoDigitalForm(request.POST, instance=registro)  # Popula o formulário com os dados enviados
+        if form.is_valid():
+            form.save() #salva o formulário
+            messages.success(request, "Registro atualizado com sucesso.")
+            return redirect('visualizar_transformacao') # Redireciona após salvar
+    else:
+        form = RedeTransformacaoDigitalForm(isinstance=registro) # Carrega o registro
+
+    context = {
+        'registro': registro,
+        'pertence_grupo_exclusao': pertence_grupo_exclusao,
+    }
+    return render(request, 'figital/visualizar_transformacao.html',context)

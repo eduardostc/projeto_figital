@@ -17,4 +17,7 @@ urlpatterns = [
     path('excluir-escalao/<int:registro_id>', views.excluir_registro_escalao, name='excluir_registro_escalao'),
     path('excluir-transformacao/<int:registro_id>', views.excluir_registro_transformacao, name='excluir_registro_transformacao'),
     
+    path('editar-escalao/<int:registro_id>', views.editar_registro_escalao, name='editar_registro_escalao'),
+    path('editar-transformacao/<int:registro_id>', views.editar_registro_transformacao, name='editar_registro_transformacao'),
+    
 ]
