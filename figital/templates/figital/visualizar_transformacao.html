@@ -28,7 +28,7 @@
                         <th scope="col">Contato</th>
                         <th scope="col">Chefe Imediato</th>
                         <th scope="col">Problema Urgente</th>
-                        {% if pertence_grupo_exclusao %}
+                        {% if pertence_grupo_exclusao or pertence_grupo_edicao %}
                             <th>Ação</th> 
                         {% endif %}
                     </tr>
@@ -45,17 +45,22 @@
                         <td scope="col">{{ registro.telefone }}</td>
                         <td scope="col">{{ registro.chefe_imediato }}</td>
                         <td scope="col">{{ registro.problema_urgente }}</td>
-                        {% if pertence_grupo_exclusao %}
+                        {% if pertence_grupo_exclusao or pertence_grupo_edicao  %}
                             <td>
                                 <div class="d-flex gap-2">
                                     <!-- Botão de Editar -->
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confirmEditModal{{ registro.id }}">
-                                        Editar
-                                    </button>
-                                    <!-- Botão de Excluir -->
-                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ registro.id }}">
-                                        Excluir
-                                    </button>                                   
+                                    {% if pertence_grupo_edicao %}
+                                        <!-- Botão de Editar (só aparece para Grupo de Edição) -->
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confirmEditModal{{ registro.id }}">
+                                            Editar
+                                        </button>
+                                    {% endif %}
+                                    {% if pertence_grupo_exclusao %}
+                                        <!-- Botão de Excluir -->
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ registro.id }}">
+                                            Excluir
+                                        </button>
+                                    {% endif %}                                 
                                 </div>
                             </td>
                         {% endif %}
@@ -67,7 +72,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="confirmDeleteModalLabel{{ registro.id }}">Confirmar Exclusão</h5>
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel{{ registro.id }}">Excluir o Registro: {{ registro.id }} </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -91,7 +96,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmEditModalLabel{{ registro.id }}">Editar Registro de Número: {{ registro.id }}</h5>
+                <h5 class="modal-title" id="confirmEditModalLabel{{ registro.id }}">Editar Registro: {{ registro.id }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 

@@ -74,13 +74,16 @@ def login_view(request):
 @login_required
 def visualizar_escalao(request):
     if str(request.user) != 'AnonymousUser':
-
         # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
         pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
+        pertence_grupo_edicao = request.user.groups.filter(name="Grupo de Edição").exists()
 
+        registros = PrimeiroEscalao.objects.all()
+        
         context = {
-            'registros' : PrimeiroEscalao.objects.all(),  # Exibe todos os registros
+            'registros' : registros,  # Exibe todos os registros
             'pertence_grupo_exclusao': pertence_grupo_exclusao,  # Passa a variável ao template
+            'pertence_grupo_edicao': pertence_grupo_edicao,  # Passa ao template
         }    
         return render(request, 'figital/visualizar_escalao.html', context)
     else:
@@ -91,18 +94,137 @@ def visualizar_escalao(request):
 @login_required
 def visualizar_transformacao(request):
     if str(request.user) != 'AnonymousUser':     
-
         # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
         pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
+        pertence_grupo_edicao = request.user.groups.filter(name="Grupo de Edição").exists()
+
+        registros = RedeTransformacaoDigital.objects.all()
 
         context = {
-            'registros' : RedeTransformacaoDigital.objects.all(),  # Exibe todos os registros
+            'registros' : registros,  # Exibe todos os registros
             'pertence_grupo_exclusao': pertence_grupo_exclusao,  # Passa a variável ao template
+            'pertence_grupo_edicao': pertence_grupo_edicao,  # Passa ao template
         }           
         return render(request, 'figital/visualizar_transformacao.html', context)
     else:
         return redirect('index')
     
+
+
+#Metodos para excluir os registros
+@login_required
+def excluir_registro_escalao(request, registro_id):
+    """
+    Exclui um registro específico, permitido apenas para membros do Grupo de Exclusão.
+    """
+    registro = get_object_or_404(PrimeiroEscalao, id=registro_id)
+
+     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
+    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
+
+    if not pertence_grupo_exclusao:
+        return HttpResponseForbidden("Você não tem permissão para excluir este registro.")
+
+    if request.method == 'POST':
+        #Excluir o registro
+        registro.delete()
+        messages.success(request, "Registro removido com sucesso.")
+
+        next_url = request.GET.get('next', 'visualizar_escalao')
+        return redirect(next_url)
+    context = {
+        'registro': registro,
+        'pertence_grupo_exclusao': pertence_grupo_exclusao,
+    }
+
+    return render(request, 'figital/index.html',context)
+
+@login_required
+def excluir_registro_transformacao(request, registro_id):
+    """
+    Exclui um registro específico, permitido apenas para membros do Grupo de Exclusão.
+    """
+    registro = get_object_or_404(RedeTransformacaoDigital, id=registro_id)
+
+     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
+    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
+
+    if not pertence_grupo_exclusao:
+        return HttpResponseForbidden("Você não tem permissão para excluir este registro.")
+
+    if request.method == 'POST':
+        #Excluir o registro
+        registro.delete()
+        messages.success(request, "Registro removido com sucesso.")
+
+        next_url = request.GET.get('next', 'visualizar_transformacao')
+        return redirect(next_url)
+    context = {
+        'registro': registro,
+        'pertence_grupo_exclusao': pertence_grupo_exclusao,
+    }
+
+    return render(request, 'figital/index.html',context)
+
+#Metodos para editar os registros
+@login_required
+def editar_registro_escalao(request, registro_id):
+    """
+    Editar um registro específico, permitido apenas para membros do Grupo de Exclusão.
+    """
+    registro = get_object_or_404(PrimeiroEscalao, id=registro_id)
+
+     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
+    pertence_grupo_edicao = request.user.groups.filter(name="Grupo de Edição").exists()
+
+    if not pertence_grupo_edicao:
+        return HttpResponseForbidden("Você não tem permissão para editar este registro.")
+
+    if request.method == 'POST':
+        form = PrimeiroEscalaoForm(request.POST, instance=registro)  # Popula o formulário com os dados enviados
+        if form.is_valid():
+            form.save() #salva o formulário
+            messages.success(request, "Registro atualizado com sucesso.")
+            return redirect('visualizar_escalao') # Redireciona após salvar
+    else:
+        form = PrimeiroEscalaoForm(isinstance=registro) # Carrega o registro
+
+    context = {
+        'registro': registro,
+        'pertence_grupo_edicao': pertence_grupo_edicao,
+    }
+    return render(request, 'figital/visualizar_escalao.html',context)
+
+
+@login_required
+def editar_registro_transformacao(request, registro_id):
+    """
+    Editar um registro específico, permitido apenas para membros do Grupo de Exclusão.
+    """
+    registro = get_object_or_404(RedeTransformacaoDigital, id=registro_id)
+
+     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
+    pertence_grupo_edicao = request.user.groups.filter(name="Grupo de Edição").exists()
+
+    if not pertence_grupo_edicao:
+        return HttpResponseForbidden("Você não tem permissão para editar este registro.")
+
+    if request.method == 'POST':
+        form = RedeTransformacaoDigitalForm(request.POST, instance=registro)  # Popula o formulário com os dados enviados
+        if form.is_valid():
+            form.save() #salva o formulário
+            messages.success(request, "Registro atualizado com sucesso.")
+            return redirect('visualizar_transformacao') # Redireciona após salvar
+    else:
+        form = RedeTransformacaoDigitalForm(isinstance=registro) # Carrega o registro
+
+    context = {
+        'registro': registro,
+        'pertence_grupo_edicao': pertence_grupo_edicao,
+    }
+    return render(request, 'figital/visualizar_transformacao.html',context)
+
+
 
 #Metodo para exportar para excel
 import csv
@@ -127,6 +249,22 @@ def exportar_escalao_excel(request):
 
     return response
 
+
+@login_required
+def exportar_transformacao_excel(request):
+    # Configurando a resposta HTTP para um arquivo Excel
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="rede_transformacao_{datetime.date.today()}.csv"'
+
+    # writer = csv.writer(response)
+    writer = csv.writer(response, delimiter=";")
+    writer.writerow(['ID', 'Data da Publicação', 'Nome', 'Secretaria', 'Cargo', 'Email', 'Telefone', 'Chefe Imediato', 'Problema Urgente'])
+
+    registros = RedeTransformacaoDigital.objects.all()
+    for registro in registros:
+        writer.writerow([registro.id, registro.data_publicacao, registro.nome, registro.secretaria, registro.cargo, registro.email, registro.telefone, registro.chefe_imediato, registro.problema_urgente])
+
+    return response
 
 #metodo 3
 # import csv
@@ -163,133 +301,3 @@ def exportar_escalao_excel(request):
 #     print("Resposta do CSV gerada com sucesso.")  # Confirmação final
 
 #     return response
-
-
-@login_required
-def exportar_transformacao_excel(request):
-    # Configurando a resposta HTTP para um arquivo Excel
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="rede_transformacao_{datetime.date.today()}.csv"'
-
-    # writer = csv.writer(response)
-    writer = csv.writer(response, delimiter=";")
-    writer.writerow(['ID', 'Data da Publicação', 'Nome', 'Secretaria', 'Cargo', 'Email', 'Telefone', 'Chefe Imediato', 'Problema Urgente'])
-
-    registros = RedeTransformacaoDigital.objects.all()
-    for registro in registros:
-        writer.writerow([registro.id, registro.data_publicacao, registro.nome, registro.secretaria, registro.cargo, registro.email, registro.telefone, registro.chefe_imediato, registro.problema_urgente])
-
-    return response
-
-#Metodos para excluir os registros
-@login_required
-def excluir_registro_escalao(request, registro_id):
-    """
-    Exclui um registro específico, permitido apenas para membros do Grupo de Exclusão.
-    """
-    registro = get_object_or_404(PrimeiroEscalao, id=registro_id)
-
-     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
-    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
-
-    if not pertence_grupo_exclusao:
-        return HttpResponseForbidden("Você não tem permissão para excluir este atendimento.")
-
-    if request.method == 'POST':
-        #Excluir o registro
-        registro.delete()
-        messages.success(request, "Registro removido com sucesso.")
-
-        next_url = request.GET.get('next', 'visualizar_escalao')
-        return redirect(next_url)
-    context = {
-        'registro': registro,
-        'pertence_grupo_exclusao': pertence_grupo_exclusao,
-    }
-
-    return render(request, 'figital/index.html',context)
-
-@login_required
-def excluir_registro_transformacao(request, registro_id):
-    """
-    Exclui um registro específico, permitido apenas para membros do Grupo de Exclusão.
-    """
-    registro = get_object_or_404(RedeTransformacaoDigital, id=registro_id)
-
-     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
-    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
-
-    if not pertence_grupo_exclusao:
-        return HttpResponseForbidden("Você não tem permissão para excluir este atendimento.")
-
-    if request.method == 'POST':
-        #Excluir o registro
-        registro.delete()
-        messages.success(request, "Registro removido com sucesso.")
-
-        next_url = request.GET.get('next', 'visualizar_transformacao')
-        return redirect(next_url)
-    context = {
-        'registro': registro,
-        'pertence_grupo_exclusao': pertence_grupo_exclusao,
-    }
-
-    return render(request, 'figital/index.html',context)
-
-#Metodos para editar os registros
-@login_required
-def editar_registro_escalao(request, registro_id):
-    """
-    Editar um registro específico, permitido apenas para membros do Grupo de Exclusão.
-    """
-    registro = get_object_or_404(PrimeiroEscalao, id=registro_id)
-
-     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
-    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
-
-    if not pertence_grupo_exclusao:
-        return HttpResponseForbidden("Você não tem permissão para editar este atendimento.")
-
-    if request.method == 'POST':
-        form = PrimeiroEscalaoForm(request.POST, instance=registro)  # Popula o formulário com os dados enviados
-        if form.is_valid():
-            form.save() #salva o formulário
-            messages.success(request, "Registro atualizado com sucesso.")
-            return redirect('visualizar_escalao') # Redireciona após salvar
-    else:
-        form = PrimeiroEscalaoForm(isinstance=registro) # Carrega o registro
-
-    context = {
-        'registro': registro,
-        'pertence_grupo_exclusao': pertence_grupo_exclusao,
-    }
-    return render(request, 'figital/visualizar_escalao.html',context)
-
-
-@login_required
-def editar_registro_transformacao(request, registro_id):
-    """
-    Editar um registro específico, permitido apenas para membros do Grupo de Exclusão.
-    """
-    registro = get_object_or_404(RedeTransformacaoDigital, id=registro_id)
-
-     # Verifica se o usuário pertence ao grupo "Grupo de Exclusão"
-    pertence_grupo_exclusao = request.user.groups.filter(name="Grupo de Exclusão").exists()
-
-    if not pertence_grupo_exclusao:
-        return HttpResponseForbidden("Você não tem permissão para editar este atendimento.")
-
-    if request.method == 'POST':
-        form = RedeTransformacaoDigitalForm(request.POST, instance=registro)  # Popula o formulário com os dados enviados
-        if form.is_valid():
-            form.save() #salva o formulário
-            messages.success(request, "Registro atualizado com sucesso.")
-            return redirect('visualizar_transformacao') # Redireciona após salvar
-    else:
-        form = RedeTransformacaoDigitalForm(isinstance=registro) # Carrega o registro
-
-    context = {
-        'registro': registro,
-        'pertence_grupo_exclusao': pertence_grupo_exclusao,
-    }
-    return render(request, 'figital/visualizar_transformacao.html',context)
