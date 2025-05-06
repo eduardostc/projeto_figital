@@ -244,7 +244,7 @@ def exportar_escalao_excel(request):
 
     registros = PrimeiroEscalao.objects.all()
     for registro in registros:
-        print(registro)  # Exibir dados no terminal
+        #print(registro)  # Exibir dados no terminal
         writer.writerow([registro.id, registro.data_publicacao, registro.nome, registro.secretaria, registro.cargo, registro.email, registro.telefone, registro.problema_urgente])
 
     return response
@@ -256,8 +256,8 @@ def exportar_transformacao_excel(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="rede_transformacao_{datetime.date.today()}.csv"'
 
-    # writer = csv.writer(response)
-    writer = csv.writer(response, delimiter=";")
+    writer = csv.writer(response)
+    # writer = csv.writer(response, delimiter=";")
     writer.writerow(['ID', 'Data da Publicação', 'Nome', 'Secretaria', 'Cargo', 'Email', 'Telefone', 'Chefe Imediato', 'Problema Urgente'])
 
     registros = RedeTransformacaoDigital.objects.all()
